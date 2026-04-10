@@ -21,7 +21,7 @@ import_community <- function(metaTurfID, filepath){ #e.g., "All_data/raw_data/ra
     mutate(
       Date = dplyr::case_when(
         suppressWarnings(!is.na(as.numeric(Date))) ~ as.Date(as.numeric(Date), origin = "1899-12-30"),
-        TRUE ~ lubridate::ymd(Date)
+        TRUE ~ NA #lubridate::ymd(Date)
       )
     ) #there are two dates that are NA, these sheets have no dates on them
   
