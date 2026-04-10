@@ -100,6 +100,22 @@ veg_only <- veg2026 |> #remove other variables besides veg cover
   #remove rows with no entries in any of the 25 subcells
   filter(!if_all(`1`:Cover, is.na))
 
+#Check if all the turfs are here
+length(unique(veg_only$turfID)) #oh no, only 158 are here
+#which are missing
+entered_turfs <- data.frame(turfID = unique(veg_only$turfID))
+metadat_turfs <- data.frame(turfID = unique(metadat$turfID))
+
+only_in_entered <- anti_join(entered_turfs, metadat_turfs, by = "turfID")
+only_in_metadat <- anti_join(metadat_turfs, entered_turfs, by = "turfID")
+
+#First, let's fix some turf naming mistakes
+veg_only2 <- veg_only |> 
+  mutate(turfID = ifelse(turfID == "24_WN10N_103", "24_WN5N_103", turfID),
+         turfID = ifelse(turfID == "29_ WN3C_106", "29_WN3C_106", turfID), 
+         turfID = ifelse(turfID == "85 WN1C 162", "85_WN1C_162", turfID))
+
+#The missing ones we have to look for are 129_AN4I_129 and 130_AN4M_130
 
 
 
