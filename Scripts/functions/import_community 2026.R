@@ -37,13 +37,7 @@ import_community_2026 <- function(metaTurfID, filepath){ #e.g., "All_data/raw_da
            Year = year(Date),
            destBlockID = as.numeric(destBlockID),
            destPlotID = as.numeric(destPlotID)) %>%
-    mutate(Year = case_when(is.na(Year)~ 2025, .default = Year)) %>% #add a year for the two sheets that don't have dates
-    #There is a turf naming mistake in the data
-    #turf 73_WN2I_158 should be 78_WN2I_158
-    mutate(turfID = ifelse(turfID == "73_WN2I_158", "78_WN2I_158", turfID), 
-           destSiteID = ifelse(turfID == "73_WN2I_158", "mid", destSiteID), 
-           destBlockID =  ifelse(turfID == "73_WN2I_158", 10, destBlockID), 
-           destPlotID = ifelse(turfID == "73_WN2I_158", 158, destPlotID)) %>%
+    #mutate(Year = case_when(is.na(Year)~ 2026, .default = Year)) %>%
     
     #join to metaTurfID
     left_join(metaTurfID , by = "turfID") %>% 
@@ -66,7 +60,7 @@ import_community_2026 <- function(metaTurfID, filepath){ #e.g., "All_data/raw_da
     file %>% 
       excel_sheets() %>% 
       set_names() %>% 
-      discard(. %in% c("CHECK", "taxonomy", "empty", "Species list", "veg survey protocol")) %>% 
+      discard(. %in% c("CHECK", "taxonomy", "empty","empty (3)", "Species list", "veg survey protocol")) %>% 
       map_df(~ read_xlsx(path = file, sheet = .x, skip = 2, n_max = 61, col_types = "text"), .id = "sheet_name")
   }, .id = "file") %>% 
     select(file:Remark) %>% 
