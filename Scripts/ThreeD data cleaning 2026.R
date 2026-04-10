@@ -1,4 +1,5 @@
 #import and clean community data from Three_D experiment
+#2026 VEGETATION SURVEY
 library(tidyverse)
 library(readxl)
 library(openxlsx)
@@ -83,9 +84,8 @@ write.xlsx(metaTurfID, file = "All_data/clean_data/threed/metaTurfID.xlsx", colN
 
 
 ####IMPORT VEG SURVEY DATA####
-#run import_community script first
-#CHeck import community script again before importing 2026 data
-#script is custom for 2025 data
+#run import_community2026 script first
+#script is custom for 2026 data
 metadat <- read.xlsx("All_data/clean_data/metaTurfID.xlsx", colNames = T)
 
 veg2025 <- import_community_2025(metadat, filepath = "All_data/raw_data/2025/vegetation_survey")
