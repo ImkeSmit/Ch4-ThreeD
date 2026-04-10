@@ -18,12 +18,14 @@ import_community <- function(metaTurfID, filepath){ #e.g., "All_data/raw_data/ra
       discard(. %in% c("CHECK", "taxonomy", "empty", "Species list", "veg survey protocol")) %>% 
       map_df(~ read_xlsx(path = file, sheet = .x, n_max = 1, col_types = c("text", rep("text", 29))), .id = "sheet_name")
   }, .id = "file") %>%
+    rename(date_raw = Date) %>%
     mutate(
       Date = dplyr::case_when(
-        suppressWarnings(!is.na(as.numeric(Date))) ~ as.Date(as.numeric(Date), origin = "1899-12-30"),
-        TRUE ~ NA #lubridate::ymd(Date)
+        suppressWarnings(!is.na(as.numeric(date_raw))) ~ as.Date(as.numeric(date_raw), origin = "1899-12-30"),
+        TRUE ~ suppressWarnings(lubridate::ymd(date_raw))
       )
-    ) #there are two dates that are NA, these sheets have no dates on them
+    ) %>%
+    select(-date_raw) #there are two dates that are NA, these sheets have no dates on them
   
   # need to break the workflow here, otherwise tedious to find problems
   metaComm <- metaComm_raw %>% 
