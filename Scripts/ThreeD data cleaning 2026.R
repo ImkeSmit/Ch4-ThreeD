@@ -89,14 +89,18 @@ write.xlsx(metaTurfID, file = "All_data/clean_data/threed/metaTurfID.xlsx", colN
 metadat <- read.xlsx("All_data/clean_data/metaTurfID.xlsx", colNames = T)
 
 veg2026 <- import_community_2026(metadat, filepath = "All_data/raw_data/2026/vegetation_survey")
-#This import community function is HARD CODED for the 2025 data
+#This import community function is not hard coded for 2026, it should be generic enough to use for all years
 
 ####Clean community data ####
-veg_only <- veg2025 |> #remove other variables besides veg cover
+veg_only <- veg2026 |> #remove other variables besides veg cover
   filter(!Species %in% c("Total Cover (%)","Vascular plants","Bryophyes","Lichen", "Litter","Bare soil",
                          "Bare rock","Poop","Height / depth (cm)","Vascular plant layer","Moss layer" , "Subplot recording (highest level):")) |> 
   mutate(Cover = as.numeric(Cover)) |> 
-  filter(!is.na(Species))
+  filter(!is.na(Species)) |> 
+  #remove rows with no entries in any of the 25 subcells
+  filter(!if_all(`1`:Cover, is.na))
+
+
 
 
 #There are a few plots with no total cover measurements. Add them from looking at the pictures. 
