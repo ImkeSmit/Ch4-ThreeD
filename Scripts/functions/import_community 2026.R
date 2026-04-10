@@ -1,5 +1,5 @@
 # import community
-#THIS SHOULD ONLY BE USED FOR THE 2025 VEGETATION SURVEY DATA
+#THIS SHOULD ONLY BE USED FOR THE 2026 VEGETATION SURVEY DATA
 library(tidyverse)
 library(stringi)
 library(readxl)
