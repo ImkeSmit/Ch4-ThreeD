@@ -2,7 +2,7 @@
 library(tidyverse)
 library(stringi)
 library(readxl)
-import_community <- function(metaTurfID, filepath){ #e.g., "All_data/raw_data/raw_threed_data/2025"
+import_community_2025 <- function(metaTurfID, filepath){ #e.g., "All_data/raw_data/raw_threed_data/2025"
   
   #### COMMUNITY DATA ####
   ### Read in files
