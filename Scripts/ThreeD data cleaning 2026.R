@@ -101,7 +101,7 @@ veg_only <- veg2026 |> #remove other variables besides veg cover
   filter(!if_all(`1`:Cover, is.na))
 
 #Check if all the turfs are here
-length(unique(veg_only$turfID)) #oh no, only 158 are here
+length(unique(veg_only$turfID)) #160 unique turfID's
 #which are missing
 entered_turfs <- data.frame(turfID = unique(veg_only$turfID))
 metadat_turfs <- data.frame(turfID = unique(metadat$turfID))
@@ -115,10 +115,6 @@ veg_only2 <- veg_only |>
          turfID = ifelse(turfID == "29_ WN3C_106", "29_WN3C_106", turfID), 
          turfID = ifelse(turfID == "85 WN1C 162", "85_WN1C_162", turfID)) 
 #Now replace th eblockID etc of these turfs!
-
-#The missing ones we have to look for are 129_AN4I_129 and 130_AN4M_130
-#130 is on page 36 of the second mid site scan
-#129 is on page 38 of the second mid site scan
 
 
 #There are a few plots with no total cover measurements. Add them from looking at the pictures. 
