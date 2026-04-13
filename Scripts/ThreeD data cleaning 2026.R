@@ -113,8 +113,19 @@ only_in_metadat <- anti_join(metadat_turfs, entered_turfs, by = "turfID")
 veg_only2 <- veg_only |> 
   mutate(turfID = ifelse(turfID == "24_WN10N_103", "24_WN5N_103", turfID),
          turfID = ifelse(turfID == "29_ WN3C_106", "29_WN3C_106", turfID), 
-         turfID = ifelse(turfID == "85 WN1C 162", "85_WN1C_162", turfID)) 
-#Now replace th eblockID etc of these turfs!
+         turfID = ifelse(turfID == "85 WN1C 162", "85_WN1C_162", turfID)) |> 
+        ##Add the site and blockID etc for these turfs
+        left_join(metadat, by = "turfID", suffix = c("", "_fill")) #give the columns from metadat the suffix -fill
+
+#For each column in table1, coalesce NA values with table2's values
+cols_to_fill <- names(veg_only)[c(1:7)]#get the columns where we need to fill values in
+
+veg_only3 <- veg_only2 %>%
+  mutate(across(
+    all_of(cols_to_fill),
+    ~ coalesce(.x, get(paste0(cur_column(), "_fill"))) #fill the cell with the first non-NA value from the variable in the two tables
+  )) %>%
+  select(names(veg_only))  # Drop the helper "_fill" columns
 
 
 #There are a few plots with no total cover measurements. Add them from looking at the pictures. 
