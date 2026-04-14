@@ -130,10 +130,11 @@ veg_only3 <- veg_only2 %>%
 
 #There are a few plots with no total cover measurements. Add them from looking at the pictures. 
 #which plots are missing % cover for species
-addcov <- veg_only |> 
+#NA cover values are allowed because the dead plants have cover = NA
+addcov <- veg_only3 |> 
   group_by(turfID) |> 
   summarise(coversum = sum(Cover, na.rm = T)) |> 
-  filter(coversum == 0) 
+  filter(coversum == 0) #none missing
 
 turf_107_WN3M_175 <- veg_only |> #corresponds to photo 421
   filter(turfID == "107_WN3M_175") |> 
