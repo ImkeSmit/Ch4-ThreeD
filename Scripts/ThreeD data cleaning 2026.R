@@ -158,19 +158,48 @@ veg_only4 <- veg_only3 |>
                            .default = Cover))
 
 ##Overwrite NA's with zeroes
-replace_cols = colnames(veg_only3)[14:38]
-for(r in 1:nrow(veg_only3)) {
+replace_cols = colnames(veg_only4)[14:38]
+for(r in 1:nrow(veg_only4)) {
   
   for(i in 1:length(replace_cols)) {
     
-    element <- veg_only3[r, which(colnames(veg_only3) == replace_cols[i])]
+    element <- veg_only4[r, which(colnames(veg_only4) == replace_cols[i])]
     
     if(is.na(element)) {
-      veg_only3[r, which(colnames(veg_only3) == replace_cols[i])] <- "0"
+      veg_only4[r, which(colnames(veg_only4) == replace_cols[i])] <- "0"
     }
   }
 }
 
+
+#Check that all species names are logical
+unique(veg_only4$Species)
+
+#Check that all cover entries are logical
+unique(veg_only4$Cover)
+
+#Check that all the entries in the subcells are logical
+unique(as.vector(as.matrix(veg_only4[, c(14:38)])))
+#there are some problems here, lets fix them
+
+valid_values <- c("1", "0", "f", "d", "df", "j")  
+
+# Subset the relevant columns (14 to 38)
+sub_df <- veg_only4[, c(14:38)]
+
+# Find positions where values are NOT in the valid set
+invalid_mask <- !apply(sub_df, 2, function(col) col %in% valid_values)
+
+# Get row and column indexes (column index adjusted back to original veg_only4)
+invalid_positions <- which(invalid_mask, arr.ind = TRUE)
+invalid_positions[, 2] <- invalid_positions[, 2] + min(14:30) - 1
+
+colnames(invalid_positions) <- c("row", "col")
+
+# See the actual bad values alongside their positions
+bad_values <- apply(invalid_positions, 1, function(pos) veg_only4[pos[1], pos[2]])
+result <- cbind(as.data.frame(invalid_positions), invalid_value = bad_values)
+print(result)
 
 
 write.xlsx(veg_only3, "All_data/clean_data/threed/community_2025.xlsx")
