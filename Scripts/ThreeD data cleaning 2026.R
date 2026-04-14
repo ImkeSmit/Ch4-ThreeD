@@ -193,13 +193,22 @@ invalid_mask <- !apply(sub_df, 2, function(col) col %in% valid_values)
 # Get row and column indexes (column index adjusted back to original veg_only4)
 invalid_positions <- which(invalid_mask, arr.ind = TRUE)
 invalid_positions[, 2] <- invalid_positions[, 2] + min(14:30) - 1
-
 colnames(invalid_positions) <- c("row", "col")
 
-# See the actual bad values alongside their positions
-bad_values <- apply(invalid_positions, 1, function(pos) veg_only4[pos[1], pos[2]])
-result <- cbind(as.data.frame(invalid_positions), invalid_value = bad_values)
-print(result)
+#look at bad values
+temp <- veg_only4[c(invalid_positions[,1])  ,  c(invalid_positions[,2], which(colnames(veg_only4) %in% c("turfID", "destSiteID", "Species")))]
+
+#Replace the bad values
+corrections <- c("destSiteID" = "d", "destBlockID" = "d", "ff" = "f", "3" = "1")  # bad -> good
+
+for (i in seq_len(nrow(invalid_positions))) {
+  r <- invalid_positions[i, "row"]
+  c <- invalid_positions[i, "col"]
+  bad <- df[r, c]
+  if (bad %in% names(corrections)) {
+    df[r, c] <- corrections[[bad]]
+  }
+}
 
 
 write.xlsx(veg_only3, "All_data/clean_data/threed/community_2025.xlsx")
