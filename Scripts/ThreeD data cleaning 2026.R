@@ -206,7 +206,7 @@ for (i in seq_len(nrow(invalid_positions))) {
   c <- invalid_positions[i, "col"]
   bad <- veg_only4[r, c]
   if (bad %in% names(corrections)) {
-    veg_only4[r, c] <- corrections[which(names(corrections) == bad)]
+    veg_only4[r, c] <- corrections[which(names(corrections) == as.vector(bad))]
   }
 }
 
@@ -232,10 +232,22 @@ abiotic_only <- veg2026 |>
                               Variable == "Vascular plant layer" ~ "Vascular plant layer height",
                               Variable == "Moss layer" ~ "Moss layer height", 
                               .default = Variable)) |>
-  mutate(across(c(`1`:`25`), as.numeric)) |>  #make all numeric 
-  slice(-c(1:9)) #first 9 rows are empty
+  mutate(across(c(`1`:`25`), as.numeric))  #make all numeric 
+
+#remove duplicated turfs
+dups <- abiotic_only[which(abiotic_only$turfID == "48_AN7N_48"), ]
+rowindexes <- which(abiotic_only$turfID == "48_AN7N_48")
+toremove <- c(rowindexes[-c(10:18)])
+abiotic_only <- abiotic_only[-toremove, ]
+
 
 ###FIx some turf naming mistakes
+entered_turfs <- data.frame(turfID = unique(abiotic_only$turfID))
+metadat_turfs <- data.frame(turfID = unique(metadat$turfID))
+
+only_in_entered <- anti_join(entered_turfs, metadat_turfs, by = "turfID")
+only_in_metadat <- anti_join(metadat_turfs, entered_turfs, by = "turfID")
+
 abiotic_only2 <- abiotic_only |> 
   mutate(turfID = ifelse(turfID == "24_WN10N_103", "24_WN5N_103", turfID),
          turfID = ifelse(turfID == "29_ WN3C_106", "29_WN3C_106", turfID), 
@@ -263,6 +275,11 @@ vasc_height <- abiotic_only3 |>
          Vascular_plant_height3 = `3`,
          Vascular_plant_height4 = `4`) |> 
   select(!Variable)
+
+vasc_height |> 
+  group_by(turfID) |> 
+  filter(n() >1) |>  
+  ungroup()
 
 #create table of moss height
 moss_height <- abiotic_only3 |> 
