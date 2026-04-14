@@ -204,9 +204,9 @@ corrections <- c("destSiteID" = "d", "destBlockID" = "d", "ff" = "f", "3" = "1")
 for (i in seq_len(nrow(invalid_positions))) {
   r <- invalid_positions[i, "row"]
   c <- invalid_positions[i, "col"]
-  bad <- df[r, c]
+  bad <- veg_only4[r, c]
   if (bad %in% names(corrections)) {
-    df[r, c] <- corrections[[bad]]
+    veg_only4[r, c] <- corrections[which(names(corrections) == bad)]
   }
 }
 
