@@ -235,8 +235,27 @@ abiotic_only <- veg2026 |>
   mutate(across(c(`1`:`25`), as.numeric)) |>  #make all numeric 
   slice(-c(1:9)) #first 9 rows are empty
 
+###FIx some turf naming mistakes
+abiotic_only2 <- abiotic_only |> 
+  mutate(turfID = ifelse(turfID == "24_WN10N_103", "24_WN5N_103", turfID),
+         turfID = ifelse(turfID == "29_ WN3C_106", "29_WN3C_106", turfID), 
+         turfID = ifelse(turfID == "85 WN1C 162", "85_WN1C_162", turfID)) |> 
+  ##Add the site and blockID etc for these turfs
+  left_join(metadat, by = "turfID", suffix = c("", "_fill")) #give the columns from metadat the suffix -fill
+
+#For each column in table1, coalesce NA values with table2's values
+cols_to_fill <- names(abiotic_only)[c(1:7)]#get the columns where we need to fill values in
+
+abiotic_only3  <- abiotic_only2  %>%
+  mutate(across(
+    all_of(cols_to_fill),
+    ~ coalesce(.x, get(paste0(cur_column(), "_fill"))) #fill the cell with the first non-NA value from the variable in the two tables
+  )) %>%
+  select(names(abiotic_only))  # Drop the helper "_fill" columns
+
+
 #create table of vascular height
-vasc_height <- abiotic_only |> 
+vasc_height <- abiotic_only3 |> 
   filter(Variable == "Vascular plant layer height") |> 
   select(turfID, Variable, `1`:`4`) |> 
   rename(Vascular_plant_height1 = `1`, 
@@ -246,7 +265,7 @@ vasc_height <- abiotic_only |>
   select(!Variable)
 
 #create table of moss height
-moss_height <- abiotic_only |> 
+moss_height <- abiotic_only3 |> 
   filter(Variable == "Moss layer height") |> 
   select(turfID, Variable, `1`:`4`) |> 
   rename(Moss_layer_height1 = `1`, 
@@ -256,7 +275,7 @@ moss_height <- abiotic_only |>
   select(!Variable)
 
 #join moss and vascular height to other data
-abiotic_only2 <- abiotic_only |> 
+abiotic_only4 <- abiotic_only3 |> 
   filter(!Variable %in% c("Vascular plant layer height", "Moss layer height")) |>
   left_join(vasc_height, by = "turfID") |> 
   left_join(moss_height, by = "turfID")
