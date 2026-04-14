@@ -1,5 +1,5 @@
 # import community
-#THIS SHOULD ONLY BE USED FOR THE 2026 VEGETATION SURVEY DATA
+#THIS IS NOT HARD CODED FOR THE 2026 DATA AND CAN BE USED FOR ANY DATASET
 library(tidyverse)
 library(stringi)
 library(readxl)
