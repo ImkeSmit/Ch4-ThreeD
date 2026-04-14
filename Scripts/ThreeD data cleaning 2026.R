@@ -276,10 +276,6 @@ vasc_height <- abiotic_only3 |>
          Vascular_plant_height4 = `4`) |> 
   select(!Variable)
 
-vasc_height |> 
-  group_by(turfID) |> 
-  filter(n() >1) |>  
-  ungroup()
 
 #create table of moss height
 moss_height <- abiotic_only3 |> 
@@ -317,7 +313,7 @@ for(r in 1:nrow(abiotic_only2)) {
     }
   }
   
-write.xlsx(abiotic_only2, "All_data/clean_data/threed/abiotic_and_veg_height_2025.xlsx")
+write.xlsx(abiotic_only4, "All_data/clean_data/abiotic_and_veg_height_2026.xlsx")
 
   
   
