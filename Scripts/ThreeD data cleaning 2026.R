@@ -210,8 +210,8 @@ for (i in seq_len(nrow(invalid_positions))) {
   }
 }
 
-
-write.xlsx(veg_only3, "All_data/clean_data/threed/community_2025.xlsx")
+###save clean data
+write.xlsx(veg_only4, "All_data/clean_data/community_2026.xlsx")
 
 
 
