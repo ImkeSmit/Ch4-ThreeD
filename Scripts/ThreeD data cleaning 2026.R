@@ -136,9 +136,14 @@ addcov <- veg_only3 |>
   summarise(coversum = sum(Cover, na.rm = T)) |> 
   filter(coversum == 0) #none missing
 
+#Let's check if only dead sp have NA cover
+nacov <- veg_only3 |> 
+  filter(is.na(Cover)) |> 
+  select(Species, turfID, Cover) #There are a few that are supposed to have cover values
+
 
 #remove the unknown seedlings row if it has no entries
-veg_only3 <- veg_only2 |> 
+veg_only4 <- veg_only3 |> 
   #remove the row if thenumber of NA's equal the number of columns
   filter(!(Species == "Unknown seedlings" & 
              rowSums(is.na(across(14:38))) == (38 - 14 + 1))) |> 
@@ -147,10 +152,9 @@ veg_only3 <- veg_only2 |>
                             rowSums(is.na(across(14:38))) < (38 - 14 + 1) ~ 0.5, 
                            .default = Cover)) |> 
   #there is one more row with Cover = NA. 
-  #This is for turf 41_WN7C_122 for sp Thesium high site
-  #There is no photo of this plot
+  #This is for turf 60_AN8M_60 for Heliophila rigidiscula
   #Safe to just give it 0.5
-  mutate(Cover = case_when(Species == "Thesium high site" & turfID == "41_WN7C_122" ~ 0.5, 
+  mutate(Cover = case_when(Species == "Heliophila rigidiscula" & turfID == "60_AN8M_60" ~ 0.5, 
                            .default = Cover))
 
 ##Overwrite NA's with zeroes
