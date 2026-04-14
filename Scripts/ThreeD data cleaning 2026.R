@@ -102,7 +102,7 @@ veg_only <- veg2026 |> #remove other variables besides veg cover
 
 #Check if all the turfs are here
 length(unique(veg_only$turfID)) #160 unique turfID's
-#which are missing
+#find wrong turfID's
 entered_turfs <- data.frame(turfID = unique(veg_only$turfID))
 metadat_turfs <- data.frame(turfID = unique(metadat$turfID))
 
