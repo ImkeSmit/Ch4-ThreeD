@@ -136,26 +136,6 @@ addcov <- veg_only3 |>
   summarise(coversum = sum(Cover, na.rm = T)) |> 
   filter(coversum == 0) #none missing
 
-turf_107_WN3M_175 <- veg_only |> #corresponds to photo 421
-  filter(turfID == "107_WN3M_175") |> 
-  select(Species, turfID, Remark) |> 
-  mutate(Cover = c(3,40,6,2,27,0.5,1,0.5,10,2,2,1,2,NA), #unknown seedlings was not recorded in any of the subcells
-         Remark = "cover estimated from photo")
-
-turf_22_WN5M_102 <- veg_only |> #corresponds to photo 433
-  filter(turfID == "22_WN5M_102") |> 
-  select(Species, turfID, Remark) |> 
-  mutate(Cover = c(25,50,2,12,2,2,0.5,0.5,1,1,0.5,1,NA),#unknown seedlings was not recorded in any of the subcells 
-         Remark = "cover estimated from photo")
-
-veg_only2<- veg_only |> 
-  rows_update(turf_107_WN3M_175,
-    by = c("Species", "turfID"),
-    unmatched = "ignore" ) |> # ignores species not found in estimates
-  rows_update(turf_22_WN5M_102,
-              by = c("Species", "turfID"),
-              unmatched = "ignore")
-
 
 #remove the unknown seedlings row if it has no entries
 veg_only3 <- veg_only2 |> 
