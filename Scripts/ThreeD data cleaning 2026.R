@@ -216,7 +216,7 @@ write.xlsx(veg_only4, "All_data/clean_data/community_2026.xlsx")
 
 
 ####Clean the veg height and abiotic data####
-abiotic_only <- veg2025 |> 
+abiotic_only <- veg2026 |> 
   filter(Species %in% c("Vascular plants","Bryophyes","Lichen", "Litter","Bare soil",
                          "Bare rock","Poop","Vascular plant layer","Moss layer" )) |>
   select(!Cover) |> 
@@ -232,7 +232,8 @@ abiotic_only <- veg2025 |>
                               Variable == "Vascular plant layer" ~ "Vascular plant layer height",
                               Variable == "Moss layer" ~ "Moss layer height", 
                               .default = Variable)) |>
-  mutate(across(c(`1`:`25`), as.numeric)) #make all numeric
+  mutate(across(c(`1`:`25`), as.numeric)) |>  #make all numeric 
+  slice(-c(1:9)) #first 9 rows are empty
 
 #create table of vascular height
 vasc_height <- abiotic_only |> 
@@ -263,14 +264,7 @@ abiotic_only2 <- abiotic_only |>
 
 #identify problematic cover values
 summary(abiotic_only2) #cols1 -25 must have max cover of 100.5
-#col 10 has max of 999
-
-prob10 <- abiotic_only2 |> 
-  slice_max(`10`, n = 10) #problem value is at 93_AN6M_93
-#fix it
-abiotic_only2[which(abiotic_only2$turfID == "93_AN6M_93" & abiotic_only2$Variable == "Vascular plant cover"), 
-              which(colnames(abiotic_only2) == "10")] <- 99
-
+#all ok
 
 
 #replace NA's with 0 where appropriate
