@@ -217,7 +217,7 @@ veg_only4 <- standardise_names(data = veg_only3, data_species_column = "Species"
 
 
 
-write.xlsx(veg_only4, "All_data/clean_data/threed/community_2025.xlsx")
+write.xlsx(veg_only4, "All_data/clean_data/community_2025.xlsx")
 
 
 
