@@ -46,18 +46,18 @@ standardise_names <- function(data, #dataframe containing species names that nee
       
       if (TRUE %in% found){ # only runs if the species is a synonym
         new_name <- naming_system[j, which(colnames(naming_system) %in% correct_name)] # finds the true name of the species and saves it
-        record_date <- data[i, which(colnames(data) == "Date")] #get date of
+        record_date <- data[i, which(colnames(data) == "Date")] #get date of record
         
-        if(is.na(condition)){
+        if(is.na(condition)){ #if there is no condition, change all names
         
         data[i, which(colnames(data) == data_species_column)] <- new_name
         
         #add column to keep track of which names changed
         data[i, which(colnames(data) == "change_tracker")] <- paste0(old_name, " -> ", new_name)
         
-        } else {
-          ###Only change the name if condition is met
-          if(record_date < condition) { #only change name if date is before the condition date
+        } else { #if there is a condition...
+          ###Only change the name if the date is before the condition
+          if(record_date < condition) { 
             data[i, which(colnames(data) == data_species_column)] <- new_name
             #add column to keep track of which names changed
             data[i, which(colnames(data) == "change_tracker")] <- paste0(old_name, " -> ", new_name)
