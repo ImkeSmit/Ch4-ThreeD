@@ -210,8 +210,22 @@ for (i in seq_len(nrow(invalid_positions))) {
   }
 }
 
+
+####Clean species names####
+#run standardise_names function
+
+#import name key 
+key <- tibble(read.xlsx("All_data/clean_data/threed_name_key working.xlsx", sheet = 2) |> 
+  mutate(condition = date(dmy(condition)))) #make the condition a date
+
+#run the name standardisations
+veg_only5 <- standardise_names(data = veg_only4, data_species_column = "Species", naming_system = key,
+                               correct_name = "taxon", synonym = c("synonym1", "synonym2"), condition = "condition")
+
+
+
 ###save clean data
-write.xlsx(veg_only4, "All_data/clean_data/community_2026.xlsx")
+write.xlsx(veg_only5, "All_data/clean_data/community_2026.xlsx")
 
 
 
