@@ -96,7 +96,8 @@ veg_only <- veg2025 |> #remove other variables besides veg cover
   filter(!Species %in% c("Total Cover (%)","Vascular plants","Bryophyes","Lichen", "Litter","Bare soil",
                          "Bare rock","Poop","Height / depth (cm)","Vascular plant layer","Moss layer" , "Subplot recording (highest level):")) |> 
   mutate(Cover = as.numeric(Cover)) |> 
-  filter(!is.na(Species))
+  filter(!is.na(Species)) |> 
+  mutate(Date = case_when(is.na(Date) ~ date(ym("2025-04")), TRUE ~ Date)) #fill in missing dates with just the month and year
 
 
 #There are a few plots with no total cover measurements. Add them from looking at the pictures. 
@@ -202,8 +203,21 @@ for (i in seq_len(nrow(invalid_positions))) {
   }
 }
 
+####Clean species names####
+#run standardise_names function
 
-write.xlsx(veg_only3, "All_data/clean_data/threed/community_2025.xlsx")
+#import name key 
+key <- tibble(read.xlsx("All_data/clean_data/threed_name_key working.xlsx", sheet = 2) |> 
+                mutate(condition = date(dmy(condition)))) #make the condition a date
+
+#run the name standardisations
+veg_only4 <- standardise_names(data = veg_only3, data_species_column = "Species", naming_system = key,
+                               correct_name = "taxon", synonym = c("synonym1", "synonym2"), condition = "condition")
+
+
+
+
+write.xlsx(veg_only4, "All_data/clean_data/threed/community_2025.xlsx")
 
 
 
