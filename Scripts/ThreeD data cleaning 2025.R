@@ -143,6 +143,12 @@ veg_only3 <- veg_only2 |>
   mutate(Cover = case_when(Species == "Thesium high site" & turfID == "41_WN7C_122" ~ 0.5, 
                            .default = Cover))
 
+#Let's check if only dead sp have NA cover
+nacov <- veg_only3 |> 
+  filter(is.na(Cover)) |> 
+  select(Species, turfID, Cover) #all good
+
+
 ##Overwrite NA's with zeroes
 replace_cols = colnames(veg_only3)[14:38]
 for(r in 1:nrow(veg_only3)) {
@@ -157,6 +163,44 @@ for(r in 1:nrow(veg_only3)) {
   }
 }
 
+
+#Check that all species names are logical
+unique(veg_only3$Species)
+
+#Check that all cover entries are logical
+unique(veg_only3$Cover)
+
+#Check that all the entries in the subcells are logical
+unique(as.vector(as.matrix(veg_only3[, c(14:38)])))
+#there are some problems here, lets fix them
+
+valid_values <- c("1", "0", "f", "d", "df", "j")  
+
+# Subset the relevant columns (14 to 38)
+sub_df <- veg_only3[, c(14:38)]
+
+# Find positions where values are NOT in the valid set
+invalid_mask <- !apply(sub_df, 2, function(col) col %in% valid_values)
+
+# Get row and column indexes (column index adjusted back to original veg_only4)
+invalid_positions <- which(invalid_mask, arr.ind = TRUE)
+invalid_positions[, 2] <- invalid_positions[, 2] + min(14:30) - 1
+colnames(invalid_positions) <- c("row", "col")
+
+#look at bad values
+temp <- veg_only3[c(invalid_positions[,1])  ,  c(invalid_positions[,2], which(colnames(veg_only3) %in% c("turfID", "destSiteID", "Species")))]
+
+#Replace the bad values
+corrections <- c("destSiteID" = "d", "destBlockID" = "d", "f1" = "1", "25" = "1")  # bad -> good
+
+for (i in seq_len(nrow(invalid_positions))) {
+  r <- invalid_positions[i, "row"]
+  c <- invalid_positions[i, "col"]
+  bad <- veg_only3[r, c]
+  if (bad %in% names(corrections)) {
+    veg_only3[r, c] <- corrections[which(names(corrections) == as.vector(bad))]
+  }
+}
 
 
 write.xlsx(veg_only3, "All_data/clean_data/threed/community_2025.xlsx")
