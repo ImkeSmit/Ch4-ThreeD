@@ -37,10 +37,11 @@ all_years |>
 
 
 #plot many turfs
+  pdf("Figures/turfmap.pdf")
 x <- all_years %>% 
-  filter(
-         grepl("Helichrysum", Species),
-         turfID %in% c("67_AN9M_67"),
+  filter(Species %in% c("Festuca scabra", "Tenaxia disticha", "Ficinia cinnamomea", "Sporobolus centrifugus")
+         #grepl(c("Helichrysum", "Festuca"), Species),
+         
   ) %>%
   arrange(destSiteID, origPlotID, turfID) %>% 
   group_by(destSiteID, origPlotID, turfID) %>% 
@@ -52,7 +53,7 @@ x <- all_years %>%
   nest() %>% 
   {map2(
     .x = .$data, 
-    .y = glue::glue("Site {.$destSiteID}: plot {.$destPlotID}: turf {.$turfID}"),
+    .y = glue::glue("Site {.$site_id}: plot {.$origPlotID}: turf {.$turf_id}"),
     .f = ~make_turf_plot(
       data = .x, 
       year = year, 
@@ -62,4 +63,29 @@ x <- all_years %>%
       title = glue::glue(.y), 
       grid_long = grid)
   )} %>% 
-  walk(print)
+  walk(print)#There are some plots that only print one year's data. I think it's because of a discrepancy between the origplotID's in the 2025 and 2026 data. fix that in the data cleaning
+
+dev.off()
+
+
+
+x2 <- all_years |>
+  # sort
+  arrange(destSiteID, origPlotID) |>
+  group_by(destSiteID, origPlotID) |>
+  rename(year = Year, 
+         species = Species, 
+         cover = Cover, 
+         site_id = destSiteID,
+         turf_id = turfID,
+         plot = origPlotID) |> 
+  nest() |>
+  pmap(.f = \(site, plot, data){
+    make_turf_plot(
+      data = data,
+      year = year, species = species, cover = cover, subturf = subturf,
+      title = glue::glue("Site {site_id}: plot {plot}"),
+      grid_long = grid
+    )
+  }) |>
+  walk(print) # print all maps
