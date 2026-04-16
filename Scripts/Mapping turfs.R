@@ -65,8 +65,6 @@ x <- all_years %>%
   )} %>% 
   walk(print)#There are some plots that only print one year's data. I think it's because of a discrepancy between the origplotID's in the 2025 and 2026 data. fix that in the data cleaning
 
-dev.off()
-
-
+dev.off() #I'm not sure why it only plots one year's data for some turfs. All the variables seem to match
 
 
