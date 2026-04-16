@@ -69,23 +69,4 @@ dev.off()
 
 
 
-x2 <- all_years |>
-  # sort
-  arrange(destSiteID, origPlotID) |>
-  group_by(destSiteID, origPlotID) |>
-  rename(year = Year, 
-         species = Species, 
-         cover = Cover, 
-         site_id = destSiteID,
-         turf_id = turfID,
-         plot = origPlotID) |> 
-  nest() |>
-  pmap(.f = \(site, plot, data){
-    make_turf_plot(
-      data = data,
-      year = year, species = species, cover = cover, subturf = subturf,
-      title = glue::glue("Site {site_id}: plot {plot}"),
-      grid_long = grid
-    )
-  }) |>
-  walk(print) # print all maps
+
