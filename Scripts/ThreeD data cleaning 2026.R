@@ -223,7 +223,7 @@ veg_only5 <- standardise_names(data = veg_only4, data_species_column = "Species"
                                correct_name = "taxon", synonym = c("synonym1", "synonym2"), condition = "condition")
 
 
-
+veg_only5$Date <- as.character(veg_only5$Date)
 ###save clean data
 write.xlsx(veg_only5, "All_data/clean_data/community_2026.xlsx")
 
