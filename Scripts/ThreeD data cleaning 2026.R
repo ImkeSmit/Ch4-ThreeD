@@ -326,7 +326,8 @@ for(r in 1:nrow(abiotic_only2)) {
       }
     }
   }
-  
+
+abiotic_only4$Date <- as.character(abiotic_only4$Date)  
 write.xlsx(abiotic_only4, "All_data/clean_data/abiotic_and_veg_height_2026.xlsx")
 
   
