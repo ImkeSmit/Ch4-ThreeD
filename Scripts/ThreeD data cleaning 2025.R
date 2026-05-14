@@ -216,7 +216,7 @@ veg_only4 <- standardise_names(data = veg_only3, data_species_column = "Species"
 
 
 
-
+veg_only4$Date <- as.character(veg_only4$Date)
 write.xlsx(veg_only4, "All_data/clean_data/community_2025.xlsx")
 
 
@@ -292,8 +292,9 @@ for(r in 1:nrow(abiotic_only2)) {
       }
     }
   }
-  
-write.xlsx(abiotic_only2, "All_data/clean_data/threed/abiotic_and_veg_height_2025.xlsx")
+
+abiotic_only2$Date <- as.character(abiotic_only2$Date)  
+write.xlsx(abiotic_only2, "All_data/clean_data/abiotic_and_veg_height_2025.xlsx")
 
   
   
