@@ -10,7 +10,7 @@ veg26 <- read.xlsx("All_data/clean_data/community_2026.xlsx")
 
 T25 <- veg25 |> 
   filter(warming == "A", 
-         grazing == "N", 
+         grazing %in% c("N", "C"), 
          Nlevel %in% c(1,2,3)) |> 
   select(-c(Remark, file, change_tracker, origSiteID, origBlockID, origPlotID, Scribe))
 
@@ -19,7 +19,7 @@ write.csv(T25, "All_data/clean_data/Lindo_community_2025.csv")
 
 T26 <- veg26 |> 
   filter(warming == "A", 
-         grazing == "N", 
+         grazing %in% c("N", "C"), 
          Nlevel %in% c(1,2,3)) |> 
   select(-c(Remark, file, change_tracker, origSiteID, origBlockID, origPlotID, Scribe))
 
