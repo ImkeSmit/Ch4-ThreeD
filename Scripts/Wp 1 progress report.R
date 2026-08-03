@@ -37,7 +37,7 @@ delta <- sprichness |>
   mutate(delta_sprich = `2025`-`2026`)
 
 
-warming_plot <- delta |> 
+warming_grazing_plot <- delta |> 
   mutate(grazing = factor(grazing, levels = c("C", "M", "I", "N"))) |> 
   ggplot(aes(x = warming, y = delta_sprich, fill = grazing)) +
   geom_boxplot() +
@@ -47,4 +47,13 @@ warming_plot <- delta |>
                     labels = c("C" = "Control", "M" = "Medium", "I" = "Intensive", "N" = "Natural")) +
   scale_x_discrete(labels = c("A" = "Ambient", "W" = "Warmed")) +
   labs(x = " ", y = "Change in species richness", fill = "Grazing treatment") +
+  theme(panel.grid = element_blank())
+
+warming_nitrogen_plot <- delta |> 
+  mutate(Nlevel = case_when(Nlevel %in% c(1,2,3) ~ 0, .default = Nlevel))+
+  mutate(Nlevel = factor(Nlevel, levels = c(0, 4,5,6,7,8,9,10))) |>
+  ggplot(aes(x = Nlevel, y = delta_sprich, fill = warming)) +
+  geom_boxplot() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  theme_bw()+
   theme(panel.grid = element_blank())
