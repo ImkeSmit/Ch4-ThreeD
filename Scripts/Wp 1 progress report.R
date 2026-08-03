@@ -2,9 +2,15 @@
 library(openxlsx)
 library(tidyverse)
 library(tidylog)
+library(ggplot2)
 
 veg25 <- read.xlsx("All_data/clean_data/community_2025.xlsx")
 veg26 <- read.xlsx("All_data/clean_data/community_2026.xlsx")
+
+#Check that all plots are here
+nrow(distinct(veg25, turfID))
+nrow(distinct(veg26, turfID))
+
 
 veg_all <- veg25 |> 
   bind_rows(veg_26) |> 
@@ -18,12 +24,27 @@ veg_all |>
 
 ###Changes in Species richness per treatment
 sprichness <- veg_all |> 
-  group_by(turfID) |> 
+  group_by(turfID, Year) |> 
   distinct(Species, .keep_all = TRUE) |> 
-  mutate(sprichness = n()) |> 
+  mutate(sprich = n()) |> 
   ungroup() |> 
   select(-c(Species, `1`:`25`, Cover, Remark))|> 
-  distinct(turfID, .keep_all = TRUE)
+  distinct(turfID, Year, .keep_all = TRUE)
 
 
+delta <- sprichness |> 
+  pivot_wider(id_cols = c(turfID, warming, grazing, Nlevel), names_from = Year, values_from = sprich) |> 
+  mutate(delta_sprich = `2025`-`2026`)
 
+
+warming_plot <- delta |> 
+  mutate(grazing = factor(grazing, levels = c("C", "M", "I", "N"))) |> 
+  ggplot(aes(x = warming, y = delta_sprich, fill = grazing)) +
+  geom_boxplot() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  theme_bw()+
+  scale_fill_manual(values = c("grey","lightgreen", "darkgreen",  "brown"), 
+                    labels = c("C" = "Control", "M" = "Medium", "I" = "Intensive", "N" = "Natural")) +
+  scale_x_discrete(labels = c("A" = "Ambient", "W" = "Warmed")) +
+  labs(x = " ", y = "Change in species richness", fill = "Grazing treatment") +
+  theme(panel.grid = element_blank())
