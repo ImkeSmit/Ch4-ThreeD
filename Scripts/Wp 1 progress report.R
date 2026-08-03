@@ -49,6 +49,7 @@ warming_grazing_plot <- delta |>
   labs(x = " ", y = "Change in species richness", fill = "Grazing treatment") +
   theme(panel.grid = element_blank())
 
+
 warming_nitrogen_plot <- delta |> 
   mutate(Nlevel = case_when(Nlevel %in% c(1,2,3) ~ 0, .default = Nlevel)) |> 
   mutate(Nlevel = factor(Nlevel, levels = c(0, 4,5,6,7,8,9,10))) |>
@@ -60,3 +61,15 @@ warming_nitrogen_plot <- delta |>
   scale_x_discrete(labels = c("4" = "0.5", "5" = "1", "6" = "5", "7" = "10", "8" = "50", "9" = "100", "10" = "150")) +
   theme_bw()+
   theme(panel.grid = element_blank(), legend.position = "bottom")
+
+
+###Biomass data
+nov25 <- read.csv("All_data/raw_data/2025/Biomass November 2025.csv") 
+jan26 <- read.csv("All_data/raw_data/2026/Biomass/Biomass January 2026.csv")
+feb26 <- read.csv("All_data/raw_data/2026/Biomass/Biomass February 2026.csv")
+mar26 <- read.csv("All_data/raw_data/2026/Biomass/Biomass March 2026.csv")
+
+biomass_all <- nov25 |> 
+  bind_rows(jan26) |> 
+  bind_
+
