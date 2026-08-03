@@ -50,10 +50,13 @@ warming_grazing_plot <- delta |>
   theme(panel.grid = element_blank())
 
 warming_nitrogen_plot <- delta |> 
-  mutate(Nlevel = case_when(Nlevel %in% c(1,2,3) ~ 0, .default = Nlevel))+
+  mutate(Nlevel = case_when(Nlevel %in% c(1,2,3) ~ 0, .default = Nlevel)) |> 
   mutate(Nlevel = factor(Nlevel, levels = c(0, 4,5,6,7,8,9,10))) |>
   ggplot(aes(x = Nlevel, y = delta_sprich, fill = warming)) +
   geom_boxplot() +
   geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(y = "Change in species richness", x = "Nitrogen addition (kg/Ha)", fill = "Warming treatment")+
+  scale_fill_manual(values = c("grey", "brown"), labels = c("A" = "Ambient", 'W' = "Warmed"))+
+  scale_x_discrete(labels = c("4" = "0.5", "5" = "1", "6" = "5", "7" = "10", "8" = "50", "9" = "100", "10" = "150")) +
   theme_bw()+
-  theme(panel.grid = element_blank())
+  theme(panel.grid = element_blank(), legend.position = "bottom")
