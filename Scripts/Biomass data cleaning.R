@@ -34,7 +34,20 @@ nov25 |> filter(is.na(Forbs)) #all have a forb mass
 
 
 ####january 2026####
+jan25 <- read_csv("All_data/raw_data/2026/Biomass/Biomass January 2026.csv",  
+                  col_select = c(1:8), col_types = list("c", "c", "c", "d", "d", "d", "c", "c")) |> 
+  rename(Date = `Date collected`, 
+         Notes = ...8) |> 
+  filter(!is.na(turfID)) |> 
+  mutate(Date = dmy(Date))
 
+#are all the turfID's here?
+missing_nov25 <- nov25 |> 
+  anti_join(meta_M_I, by = "turfID") #none missing
+
+#do all turfs have at least a graminoid mass?
+nov25 |> filter(is.na(Graminoids)) #all have a graminoid mass
+nov25 |> filter(is.na(Forbs)) #all have a forb mass
 
 
 jan26 <- read.csv("All_data/raw_data/2026/Biomass/Biomass January 2026.csv")|> 
