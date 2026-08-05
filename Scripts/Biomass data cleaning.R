@@ -34,7 +34,7 @@ nov25 |> filter(is.na(Forbs)) #all have a forb mass
 
 
 ####january 2026####
-jan25 <- read_csv("All_data/raw_data/2026/Biomass/Biomass January 2026.csv",  
+jan26 <- read_csv("All_data/raw_data/2026/Biomass/Biomass January 2026.csv",  
                   col_select = c(1:8), col_types = list("c", "c", "c", "d", "d", "d", "c", "c")) |> 
   rename(Date = `Date collected`, 
          Notes = ...8) |> 
@@ -42,27 +42,26 @@ jan25 <- read_csv("All_data/raw_data/2026/Biomass/Biomass January 2026.csv",
   mutate(Date = dmy(Date))
 
 #are all the turfID's here?
-missing_nov25 <- nov25 |> 
+missing_jan26 <- jan26 |> 
+  anti_join(meta_I, by = "turfID") #none missing
+
+#do all turfs have at least a graminoid mass?
+jan26 |> filter(is.na(Graminoids)) #all have a graminoid mass
+jan26 |> filter(is.na(Forbs)) #all have a forb mass
+
+
+####FEBRUARY 2026####
+feb26 <- read_csv("All_data/raw_data/2026/Biomass/Biomass February 2026.csv",  
+                  col_select = c(1:8), col_types = list("c", "c", "c", "d", "d", "d", "c", "c")) |> 
+  rename(Notes = ...8) |> 
+  filter(!is.na(turfID)) |> 
+  mutate(Date = dmy(Date), 
+         Date = case_when(is.na(Date) ~ dmy("23/02/2026"), .default = Date))
+
+#are all the turfID's here?
+missing_feb26 <- feb26 |> 
   anti_join(meta_M_I, by = "turfID") #none missing
 
 #do all turfs have at least a graminoid mass?
-nov25 |> filter(is.na(Graminoids)) #all have a graminoid mass
-nov25 |> filter(is.na(Forbs)) #all have a forb mass
-
-
-jan26 <- read.csv("All_data/raw_data/2026/Biomass/Biomass January 2026.csv")|> 
-  filter(!is.na(Graminoids))
-colnames(jan26) <-  c("destSiteID", "destBlockID", "turfID", "Graminoids", "Forbs", "Woody", "Date")
-jan26x <- jan26 |> 
-  select(destSiteID:Date) |>
-  mutate(Date = dmy(Date)) |> 
-  pivot_longer(cols = c(Graminoids:Woody), names_to = "category", values_to = "biomass_jan")
-
-
-feb26 <- read.csv("All_data/raw_data/2026/Biomass/Biomass February 2026.csv")|> 
-  filter(!is.na(Graminoids))
-colnames(feb26) <-  c("destSiteID", "destBlockID", "turfID", "Graminoids", "Forbs", "Woody", "Date")
-feb26x <- feb26 |> 
-  select(destSiteID:Date) |>
-  mutate(Date = dmy(Date)) |> 
-  pivot_longer(cols = c(Graminoids:Woody), names_to = "category", values_to = "biomass_feb")
+feb26 |> filter(is.na(Graminoids)) #missing!
+feb26 |> filter(is.na(Forbs)) #missing!
